@@ -1,0 +1,12 @@
+{
+  "name": "luzara-nova-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "serve -l 5180 .",
+    "start": "serve -l 5180 ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.3"
+  }
+}

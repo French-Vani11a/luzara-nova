@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luzara Nova | Launching 21 November</title>
+  <meta name="description" content="Luzara Nova launches on 21 November 2026. Guess what we do and win a free service.">
+  <meta name="theme-color" content="#000000">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="watermark" id="watermark" aria-hidden="true"></div>
+
+  <main class="page">
+    <header class="hero">
+      <img class="logo" src="assets/logo.png" alt="Luzara Nova" width="1120" height="320">
+      <p class="tagline" id="tagline">We’re building something.<br>We’re not saying what.</p>
+
+      <div class="countdown" id="countdown" role="timer" aria-live="off">
+        <div class="unit"><span class="num" id="cd-days">--</span><span class="lbl">Days</span></div>
+        <div class="unit"><span class="num" id="cd-hours">--</span><span class="lbl">Hours</span></div>
+        <div class="unit"><span class="num" id="cd-mins">--</span><span class="lbl">Minutes</span></div>
+        <div class="unit"><span class="num" id="cd-secs">--</span><span class="lbl">Seconds</span></div>
+      </div>
+      <p class="revealed" id="revealed">Revealed 21 November 2026</p>
+    </header>
+
+    <section class="clues" aria-label="Clues">
+      <ul id="clue-list" class="clue-list"></ul>
+    </section>
+
+    <section class="guess" id="guess">
+      <h1>Can you guess what Luzara Nova is about?</h1>
+      <p class="lede">We haven’t said a word yet. The first two people to guess right get a free service when we launch. Guess before the clues drop and you’re ahead of everyone.</p>
+      <p class="prize">Prize: a free service for the first 2 correct guesses</p>
+
+      <form id="guess-form" novalidate>
+        <div class="field">
+          <label for="guess-text">Your guess</label>
+          <textarea id="guess-text" name="guess" rows="4" maxlength="1000" placeholder="Luzara Nova is…" required></textarea>
+          <span class="err" data-for="guess"></span>
+        </div>
+        <div class="field">
+          <label for="name">Your name</label>
+          <input id="name" name="name" type="text" autocomplete="name" maxlength="100" required>
+          <span class="err" data-for="name"></span>
+        </div>
+        <div class="field">
+          <label for="phone">Phone number (WhatsApp if you have it)</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+263 77 123 4567" maxlength="20" required>
+          <span class="err" data-for="phone"></span>
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="name@email.com" maxlength="254" required>
+          <span class="err" data-for="email"></span>
+        </div>
+
+        <div class="hp" aria-hidden="true">
+          <label for="website">Website</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <button type="submit" id="submit-btn">Send my guess</button>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <footer class="foot">© <span id="year"></span> Luzara Nova</footer>
+  </main>
+
+  <button type="button" class="preview" id="preview-btn" title="Preview the launch day screen">Preview launch day</button>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
