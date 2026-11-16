@@ -270,3 +270,14 @@ input:focus, textarea:focus, select:focus { border-color: var(--cyan); box-shado
 #why .card { display: grid; grid-template-columns: 1fr 1.6fr; gap: 32px; align-items: baseline; padding: 26px 0; }
 #why .card h3 { margin: 0; }
 #why .card h3::before { display: inline-block; margin: 0 18px 0 0; }
+
+/* Logo-inspired background art: the LN mark (SVG symbol in index.html), scattered by site.js */
+.sec { overflow: hidden; }
+.sec > .wrap { position: relative; z-index: 1; }
+.deco { position: absolute; z-index: 0; pointer-events: none; height: auto; min-width: 150px; max-width: 300px; transform: rotate(var(--rot, 0deg)); }
+.hero .deco { z-index: -1; }
+.pb { fill: var(--deco-b, none); stroke: var(--deco-bs, none); stroke-width: 2; stroke-linejoin: round; }
+.pc { fill: var(--deco-c, none); stroke: var(--deco-cs, none); stroke-width: 2; stroke-linejoin: round; }
+.deco.fill { --deco-b: rgba(63,107,255,.10); --deco-c: rgba(34,199,232,.07); }
+.deco.line { --deco-bs: rgba(110,150,255,.34); --deco-cs: rgba(34,199,232,.3); }
+@media (max-width: 760px) { .deco.third { display: none; } .deco { min-width: 120px; } }

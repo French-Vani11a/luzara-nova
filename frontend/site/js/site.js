@@ -29,6 +29,99 @@
     });
   }
 
+  // Background art: scatter the LN mark across each section. Sizes, tilt and spots are
+  // pseudo-random (fixed seed), and each shape picks the emptiest spot so it avoids text.
+  (function () {
+    var NS = 'http://www.w3.org/2000/svg';
+    var STYLES = ['line', 'fill', 'line'];
+    var OBSTACLES = 'h1,h2,h3,p,li,label,input,select,textarea,button,.btn,.tile,.vcard,.facts,.eyebrow,.pill';
+
+    function rng(seed) {
+      return function () {
+        seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+        var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    function overlap(a, b) {
+      var w = Math.min(a.r, b.r) - Math.max(a.l, b.l);
+      var h = Math.min(a.b, b.b) - Math.max(a.t, b.t);
+      return w > 0 && h > 0 ? w * h : 0;
+    }
+
+    var sections = [].slice.call(document.querySelectorAll('.hero, .sec'));
+    var shapes = [];                       // { el, sec, index, w, h, rot }
+
+    sections.forEach(function (sec, i) {
+      var r = rng(4000 + i * 131);
+      var count = 2;
+      for (var k = 0; k < count; k++) {
+        var svg = document.createElementNS(NS, 'svg');
+        var use = document.createElementNS(NS, 'use');
+        use.setAttribute('href', '#ln-mark');
+        svg.appendChild(use);
+        svg.setAttribute('viewBox', '0 0 413 248');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.setAttribute('focusable', 'false');
+        svg.setAttribute('class', 'deco ' + STYLES[(k + i) % 3] + (k === 2 ? ' third' : ''));
+        svg.style.setProperty('--rot', ((r() - 0.5) * 22).toFixed(1) + 'deg');
+        sec.insertBefore(svg, sec.firstChild);
+        shapes.push({ el: svg, sec: sec, seed: 9000 + i * 977 + k * 31, scale: 0.10 + r() * 0.08 });
+      }
+    });
+
+    function layout() {
+      var mobile = window.matchMedia('(max-width: 760px)').matches;
+      sections.forEach(function (sec) {
+        var box = sec.getBoundingClientRect();
+        var W = box.width, H = box.height;
+        if (!W || !H) return;
+
+        // Text and UI the art must stay clear of (relative to the section)
+        var blocks = [].slice.call(sec.querySelectorAll(OBSTACLES)).map(function (el) {
+          var q = el.getBoundingClientRect();
+          return { l: q.left - box.left - 10, t: q.top - box.top - 6, r: q.right - box.left + 10, b: q.bottom - box.top + 6 };
+        }).filter(function (q) { return q.r - q.l > 4 && q.b - q.t > 4; });
+
+        var placed = [];
+        shapes.filter(function (s) { return s.sec === sec; }).forEach(function (s) {
+          var w = Math.max(mobile ? 110 : 150, Math.min(300, W * s.scale));
+          var h = w * 248 / 413;
+          var pad = 26;                               // keep clear of the section edges
+          var r = rng(s.seed);
+          var best = null;
+          for (var n = 0; n < 160; n++) {
+            var x = pad + r() * Math.max(1, W - w - pad * 2);
+            var y = pad + r() * Math.max(1, H - h - pad * 2);
+            var rect = { l: x - 10, t: y - 10, r: x + w + 10, b: y + h + 10 };
+            var text = 0, near = 0;
+            blocks.forEach(function (q) { text += overlap(rect, q); });
+            var wide = { l: rect.l - 70, t: rect.t - 70, r: rect.r + 70, b: rect.b + 70 };
+            placed.forEach(function (q) { near += overlap(wide, q); });
+            var score = text * 4 + near * 10 + r() * 300;
+            if (!best || score < best.score) best = { score: score, x: x, y: y, text: text };
+          }
+          // No genuinely empty spot in a crowded section: leave this shape out
+          var tooBusy = best.text > w * h * 0.03;
+          s.el.style.display = tooBusy ? 'none' : '';
+          if (tooBusy) return;
+          s.el.style.width = w.toFixed(0) + 'px';
+          s.el.style.left = best.x.toFixed(0) + 'px';
+          s.el.style.top = best.y.toFixed(0) + 'px';
+          placed.push({ l: best.x, t: best.y, r: best.x + w, b: best.y + h });
+        });
+      });
+    }
+
+    var timer;
+    function schedule() { clearTimeout(timer); timer = setTimeout(layout, 150); }
+    window.addEventListener('resize', schedule);
+    window.addEventListener('load', layout);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+    layout();
+  })();
+
   // Hero dashboard: live bars, counting numbers, cycling cards, cursor tilt
   (function () {
     var dash = document.getElementById('dash');
