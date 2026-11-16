@@ -5,18 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Luzara Nova | Your vision elevated</title>
   <meta name="description" content="Luzara Nova is a creative technology partner: custom business systems, website design and development, and selected creative solutions. Based in Zimbabwe.">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#0a1226">
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/site.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <header class="nav" id="nav">
+  <header class="nav dark" id="nav">
     <div class="wrap nav-in">
-      <a class="brand" href="#top" aria-label="Luzara Nova home"><img src="../assets/logo.png" alt="Luzara Nova" width="1120" height="320"></a>
+      <a class="brand" href="#top" aria-label="Luzara Nova home"><img src="../assets/logo-main.png" alt="Luzara Nova" width="1852" height="278"></a>
       <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
       <nav class="menu" id="menu" aria-label="Main">
         <a href="#about">About</a>
@@ -29,15 +30,41 @@
   </header>
 
   <main id="main">
-    <section class="hero" id="top">
-      <div class="wrap">
-        <p class="eyebrow">Digital &middot; Creative &middot; Tech</p>
-        <h1>Your vision<br>elevated.</h1>
-        <p class="hero-lede">A creative technology partner for ideas, businesses and the people behind them. We don&rsquo;t ask your business to fit the software. We shape the technology around your business.</p>
-        <div class="hero-actions">
-          <a class="btn" href="#contact">Start a conversation</a>
-          <a class="btn ghost" href="#services">See what we do</a>
+    <section class="hero dark" id="top">
+      <div class="grid-bg" aria-hidden="true"></div>
+      <div class="wrap hero-in">
+        <div class="hero-copy">
+          <p class="eyebrow pill"><span class="dot"></span>Digital &middot; Creative &middot; Tech</p>
+          <h1>Technology built around <span class="grad">your business.</span></h1>
+          <p class="hero-lede">Luzara Nova is a creative technology partner. We design custom business systems, websites and digital identities that fit the way you work, not the other way around.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#contact">Start a conversation</a>
+            <a class="btn ghost" href="#services">Explore services</a>
+          </div>
+          <p class="tagline-sm">Your vision, elevated.</p>
         </div>
+
+        <div class="hero-visual" id="hero-visual" aria-hidden="true">
+          <div class="vcard main" id="dash">
+            <div class="vbar"><i></i><i></i><i></i><span>Operations overview</span><span class="live-tag"><u></u>Live</span></div>
+            <div class="tiles">
+              <div class="tile"><small>Orders today</small><b id="n-orders" data-count="128">128</b><em class="up">+12%</em></div>
+              <div class="tile"><small>Stock alerts</small><b data-count="3">3</b><em class="warn">Review</em></div>
+              <div class="tile"><small>Branches</small><b data-count="4">4</b><em>Live</em></div>
+            </div>
+            <div class="chart" id="chart"><span style="--h:38%"></span><span style="--h:55%"></span><span style="--h:46%"></span><span style="--h:72%"></span><span style="--h:60%"></span><span style="--h:88%"></span><span style="--h:76%"></span></div>
+          </div>
+          <div class="vcard float a" id="card-a"><div class="msg"><span class="ok"></span><div><b>Role-based access</b><small>Branch manager &middot; granted</small></div></div></div>
+          <div class="vcard float b" id="card-b"><div class="msg"><span class="ok blue"></span><div><b>New order confirmed</b><small>Table 7 &middot; just now</small></div></div></div>
+        </div>
+      </div>
+      <div class="wrap">
+        <ul class="facts">
+          <li><strong>Custom systems</strong><span>Built around how you work</span></li>
+          <li><strong>Websites</strong><span>Modern, responsive, fast</span></li>
+          <li><strong>Creative</strong><span>Identity and design assets</span></li>
+          <li><strong>Zimbabwe</strong><span>Open to work beyond borders</span></li>
+        </ul>
       </div>
     </section>
 
@@ -87,14 +114,15 @@
       </div>
     </section>
 
-    <section class="sec alt" id="services">
+    <section class="sec dark" id="services">
       <div class="wrap">
         <p class="eyebrow">04 / Our services</p>
         <h2>Three disciplines. One clear purpose.</h2>
         <p class="lead">Custom business systems are our flagship specialisation, supported by website development and selected creative services.</p>
 
-        <div class="service">
-          <p class="tag">01 / Tech</p>
+        <div class="service-grid">
+        <div class="service featured">
+          <p class="tag">01 / Tech &middot; Flagship</p>
           <h3>Custom business systems &amp; software</h3>
           <p class="sub">Technology designed around your business.</p>
           <p>We specialise in tailored digital systems built around the way each business actually operates. Instead of forcing teams into generic workflows, we first understand the business and then shape the system around its processes, people and requirements.</p>
@@ -125,6 +153,7 @@
             <li>Brand identity</li><li>Logo design and refinement</li><li>Digital design assets</li>
             <li>Digital invitations and event stationery</li><li>QR-enabled invitations</li>
           </ul>
+        </div>
         </div>
 
         <blockquote class="pull"><strong>Your business is unique. Your technology should be too.</strong><br>Understand first. Design with purpose. Build around the way your business works.</blockquote>
@@ -205,7 +234,7 @@
       </div>
     </section>
 
-    <section class="sec contact" id="contact">
+    <section class="sec contact dark" id="contact">
       <div class="wrap">
         <p class="eyebrow">Let&rsquo;s start a conversation</p>
         <h2>Every great idea begins with a vision.</h2>
@@ -264,7 +293,7 @@
     </section>
   </main>
 
-  <footer class="foot">
+  <footer class="foot dark">
     <div class="wrap">
       <span>&copy; <span id="year"></span> Luzara Nova</span>
       <span>Digital &middot; Creative &middot; Tech</span>

@@ -15,6 +15,128 @@
     }
   });
 
+  // Scroll reveal: fade elements in as they enter the viewport
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.sec h2, .sec .lead, .card, .service, .steps li, .pull, .facts, #contact-form, .links').forEach(function (el, i) {
+      el.classList.add('rv');
+      el.style.setProperty('--d', (i % 4) * 0.07 + 's');
+      io.observe(el);
+    });
+  }
+
+  // Hero dashboard: live bars, counting numbers, cycling cards, cursor tilt
+  (function () {
+    var dash = document.getElementById('dash');
+    if (!dash) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // keep it static
+
+    var chart = document.getElementById('chart');
+    var bars = [].slice.call(chart.children);
+    var counters = [].slice.call(dash.querySelectorAll('[data-count]'));
+    var orders = document.getElementById('n-orders');
+    var ordersValue = Number(orders.getAttribute('data-count'));
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    // 1. Count numbers up from zero on load
+    counters.forEach(function (el) {
+      var target = Number(el.getAttribute('data-count'));
+      var start = null;
+      el.textContent = '0';
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min((ts - start) / 1400, 1);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+
+    function bumpOrders() {
+      ordersValue += 1;
+      orders.textContent = ordersValue;
+      orders.classList.remove('tick');
+      void orders.offsetWidth;
+      orders.classList.add('tick');
+    }
+
+    // 2. Bars grow from zero, then drift like a live feed
+    chart.classList.add('init');
+    void chart.offsetHeight;
+    bars.forEach(function (b, i) { b.style.transitionDelay = (i * 90) + 'ms'; });
+    chart.classList.remove('init');
+    setTimeout(function () { bars.forEach(function (b) { b.style.transitionDelay = ''; }); }, 1800);
+
+    setInterval(function () {
+      if (document.hidden) return;
+      bars.forEach(function (b, i) {
+        b.style.transitionDelay = (i * 60) + 'ms';
+        b.style.height = Math.round(rand(24, 94)) + '%';
+      });
+    }, 3200);
+
+    // 3. Notification cards that swap messages
+    function cycle(card, messages, firstDelay, every) {
+      var msg = card.querySelector('.msg');
+      var icon = msg.querySelector('.ok');
+      var title = msg.querySelector('b');
+      var sub = msg.querySelector('small');
+      var i = 0;
+      function next() {
+        if (document.hidden) return;
+        msg.classList.add('out');
+        setTimeout(function () {
+          i = (i + 1) % messages.length;
+          var m = messages[i];
+          title.textContent = m.t;
+          sub.textContent = m.s;
+          icon.className = 'ok' + (m.blue ? ' blue' : '');
+          msg.classList.remove('out');
+          msg.classList.add('pre');
+          void msg.offsetWidth;
+          msg.classList.remove('pre');
+          if (m.order) bumpOrders();
+        }, 480);
+      }
+      setTimeout(function () { next(); setInterval(next, every); }, firstDelay);
+    }
+
+    cycle(document.getElementById('card-a'), [
+      { t: 'Role-based access', s: 'Branch manager \u00b7 granted' },
+      { t: 'Stock alert resolved', s: 'Inventory \u00b7 Branch 2' },
+      { t: 'Invoice paid', s: 'INV-2041 \u00b7 received', blue: true },
+      { t: 'Report ready', s: 'Weekly sales \u00b7 exported' }
+    ], 3800, 6400);
+
+    cycle(document.getElementById('card-b'), [
+      { t: 'New order confirmed', s: 'Table 7 \u00b7 just now', blue: true },
+      { t: 'New order confirmed', s: 'Table 3 \u00b7 just now', blue: true, order: true },
+      { t: 'Customer added', s: 'Loyalty list \u00b7 just now' },
+      { t: 'New order confirmed', s: 'Takeaway \u00b7 just now', blue: true, order: true }
+    ], 1200, 5200);
+
+    // 4. Cursor tilt (desktop with a mouse only)
+    var hero = document.getElementById('top');
+    if (window.matchMedia('(hover: hover) and (min-width: 1001px)').matches) {
+      hero.addEventListener('pointermove', function (e) {
+        var r = hero.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - 0.5;
+        var y = (e.clientY - r.top) / r.height - 0.5;
+        dash.style.setProperty('--ry', (x * 12).toFixed(2) + 'deg');
+        dash.style.setProperty('--rx', (-y * 10).toFixed(2) + 'deg');
+      });
+      hero.addEventListener('pointerleave', function () {
+        dash.style.setProperty('--ry', '0deg');
+        dash.style.setProperty('--rx', '0deg');
+      });
+    }
+  })();
+
   // Contact form
   var API = (window.LUZARA_API || '').replace(/\/$/, '');
   var form = document.getElementById('contact-form');

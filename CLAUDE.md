@@ -31,6 +31,7 @@ There are no tests or linter configured.
 - Settings come from `backend/.env` (see `backend/.env.example`); never commit `.env` or the database.
 - API responses use `{ ok: boolean, message?: string, ... }`.
 - Frontend is plain HTML/CSS/JS with no build step.
+- Main site design (`frontend/site/css/site.css`): navy and electric-blue palette, Sora headings with Inter body. The style is flat: solid colours only, no gradients or glows (accent is `--accent` blue and `--cyan`). Content is laid out openly, not in boxes: `.card` is just a top hairline with a numbered heading, services are two-column rows, "Why" is a list of rows, and the contact form has no panel. Avoid adding bordered or filled cards; the only boxed element is the hero dashboard mock-up. Every section uses the navy theme (variables on `:root`; `.sec.alt` is a slightly different navy gradient). Keep new pages and sections dark: the main site logo (`frontend/assets/logo-main.png`, blue/cyan LN mark with white text, transparent background) is made for dark backgrounds. `frontend/assets/favicon.png` is the LN mark alone. The launch/countdown page and admin still use the old silver `frontend/assets/logo.png`. Colours are CSS variables at the top of the file. The hero dashboard is animated in `frontend/site/js/site.js` (count-up numbers, drifting bars, cycling notification cards, cursor tilt); it is skipped when the visitor prefers reduced motion, and the tilt only runs on desktop with a mouse.
 
 ## Where to edit
 - Clue text and unlock dates: `backend/config/clues.js`
