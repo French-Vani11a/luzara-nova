@@ -33,7 +33,6 @@
   // pseudo-random (fixed seed), and each shape picks the emptiest spot so it avoids text.
   (function () {
     var NS = 'http://www.w3.org/2000/svg';
-    var STYLES = ['line', 'fill', 'line'];
     var OBSTACLES = 'h1,h2,h3,p,li,label,input,select,textarea,button,.btn,.tile,.vcard,.facts,.eyebrow,.pill';
 
     function rng(seed) {
@@ -51,25 +50,23 @@
     }
 
     var sections = [].slice.call(document.querySelectorAll('.hero, .sec'));
-    var shapes = [];                       // { el, sec, index, w, h, rot }
+    var shapes = [];                       // { el, sec, seed, scale }
 
-    sections.forEach(function (sec, i) {
-      var r = rng(4000 + i * 131);
-      var count = 2;
-      for (var k = 0; k < count; k++) {
-        var svg = document.createElementNS(NS, 'svg');
-        var use = document.createElementNS(NS, 'use');
-        use.setAttribute('href', '#ln-mark');
-        svg.appendChild(use);
-        svg.setAttribute('viewBox', '0 0 413 248');
-        svg.setAttribute('aria-hidden', 'true');
-        svg.setAttribute('focusable', 'false');
-        svg.setAttribute('class', 'deco ' + STYLES[(k + i) % 3] + (k === 2 ? ' third' : ''));
-        svg.style.setProperty('--rot', ((r() - 0.5) * 22).toFixed(1) + 'deg');
-        sec.insertBefore(svg, sec.firstChild);
-        shapes.push({ el: svg, sec: sec, seed: 9000 + i * 977 + k * 31, scale: 0.10 + r() * 0.08 });
-      }
-    });
+    function addShape(sec, i, k) {
+      var r = rng(4000 + i * 131 + k * 17);
+      var svg = document.createElementNS(NS, 'svg');
+      var use = document.createElementNS(NS, 'use');
+      use.setAttribute('href', '#ln-mark');
+      svg.appendChild(use);
+      svg.setAttribute('viewBox', '0 0 413 248');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      svg.setAttribute('class', 'deco fill');
+      svg.style.setProperty('--rot', ((r() - 0.5) * 40).toFixed(1) + 'deg');
+      sec.insertBefore(svg, sec.firstChild);
+      shapes.push({ el: svg, sec: sec, seed: 9000 + i * 977 + k * 31, scale: 0.10 + r() * 0.08 });
+    }
+    sections.forEach(function (sec, i) { for (var k = 0; k < 3; k++) addShape(sec, i, k); });
 
     function layout() {
       var mobile = window.matchMedia('(max-width: 760px)').matches;
@@ -86,7 +83,7 @@
 
         var placed = [];
         shapes.filter(function (s) { return s.sec === sec; }).forEach(function (s) {
-          var w = Math.max(mobile ? 110 : 150, Math.min(300, W * s.scale));
+          var w = Math.max(mobile ? 110 : 170, Math.min(340, W * s.scale * 1.15));
           var h = w * 248 / 413;
           var pad = 26;                               // keep clear of the section edges
           var r = rng(s.seed);
