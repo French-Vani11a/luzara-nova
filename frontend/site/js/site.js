@@ -15,6 +15,30 @@
     }
   });
 
+  // Nav highlight: the last linked section whose top has passed the viewport's upper third
+  // (sections without a nav link, like Direction, keep the previous link lit)
+  var links = [].slice.call(menu.querySelectorAll('a[href^="#"]')).map(function (a) {
+    return { a: a, sec: document.querySelector(a.getAttribute('href')) };
+  }).filter(function (l) { return l.sec; });
+  var ticking = false;
+  function setActive() {
+    ticking = false;
+    var line = window.innerHeight * 0.35, current = null;
+    var atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    links.forEach(function (l) { if (l.sec.getBoundingClientRect().top <= line) current = l; });
+    if (atEnd) current = links[links.length - 1];
+    links.forEach(function (l) {
+      var on = l === current;
+      l.a.classList.toggle('active', on);
+      if (on) l.a.setAttribute('aria-current', 'true'); else l.a.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(setActive); }
+  }, { passive: true });
+  window.addEventListener('resize', setActive);
+  setActive();
+
   // Scroll reveal: fade elements in as they enter the viewport
   if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     var io = new IntersectionObserver(function (entries) {
@@ -85,12 +109,14 @@
         shapes.filter(function (s) { return s.sec === sec; }).forEach(function (s) {
           var w = Math.max(mobile ? 110 : 170, Math.min(340, W * s.scale * 1.15));
           var h = w * 248 / 413;
-          var pad = 26;                               // keep clear of the section edges
+          // Desktop keeps clear of the edges; on mobile text fills the width, so let marks bleed off the sides
+          var pad = mobile ? -w * 0.3 : 26;
+          var padY = 26;                              // never bleed off the top or bottom
           var r = rng(s.seed);
           var best = null;
           for (var n = 0; n < 160; n++) {
             var x = pad + r() * Math.max(1, W - w - pad * 2);
-            var y = pad + r() * Math.max(1, H - h - pad * 2);
+            var y = padY + r() * Math.max(1, H - h - padY * 2);
             var rect = { l: x - 10, t: y - 10, r: x + w + 10, b: y + h + 10 };
             var text = 0, near = 0;
             blocks.forEach(function (q) { text += overlap(rect, q); });
@@ -99,8 +125,9 @@
             var score = text * 4 + near * 10 + r() * 300;
             if (!best || score < best.score) best = { score: score, x: x, y: y, text: text };
           }
-          // No genuinely empty spot in a crowded section: leave this shape out
-          var tooBusy = best.text > w * h * 0.03;
+          // Desktop: no genuinely empty spot in a crowded section, leave this shape out.
+          // Mobile: there is never an empty spot, so keep the least-covered one (low contrast, sits behind text)
+          var tooBusy = !mobile && best.text > w * h * 0.03;
           s.el.style.display = tooBusy ? 'none' : '';
           if (tooBusy) return;
           s.el.style.width = w.toFixed(0) + 'px';
